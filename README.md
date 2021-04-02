@@ -24,9 +24,9 @@ Then double click and execute the main.py file
 
 <kbd>1</kbd> : Switch the pencil to draw the starting point entity    
 <kbd>2</kbd> : Switch the pencil to draw the end point entity  
-<kbd>3</kbd> : Switch the pencil to draw the wall entity
-<kbd>R</kbd> : Start new game
-<kbd>Q</kbd> : Exit the game
+<kbd>3</kbd> : Switch the pencil to draw the wall entity  
+<kbd>R</kbd> : Start new game  
+<kbd>Q</kbd> : Exit the game  
 <kbd>SPACE</kbd> : Start the A* algorithm with the current layout
 
 
