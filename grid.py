@@ -27,8 +27,8 @@ class Grid:
             for col in range(self.cols):
                 self.grid[row][col].reset()
 
-    def get_neighbours(self, block):
-        neighbours = []
+    def get_neighbors(self, block):
+        neighbors = []
 
         for x in range(-1, 2):
             for y in range(-1, 2):
@@ -39,9 +39,9 @@ class Grid:
                     check_y = block.col + y
 
                     if check_x >= 0 and check_x < self.rows and check_y >= 0 and check_y < self.cols:
-                        neighbours.append(self.grid[check_x][check_y])
+                        neighbors.append(self.grid[check_x][check_y])
 
-        return neighbours
+        return neighbors
 
     def draw_grid(self, screen):
         for row in range(len(self.grid)):

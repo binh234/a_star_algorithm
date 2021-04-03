@@ -1,6 +1,7 @@
 from block import BlockType
 from heapq import *
 from math import sqrt
+import time
 
 class Pathfinder:
     def __init__(self, grid):
@@ -17,14 +18,14 @@ class Pathfinder:
             - block_b(Block): second block
         
         '''
-        dist_x = abs(block_a.x - block_b.x)
-        dist_y = abs(block_a.y - block_b.y)
+        dist_x = abs(block_a.row - block_b.row)
+        dist_y = abs(block_a.col - block_b.col)
 
-        # if dist_x > dist_y:
-        #     return 10 * dist_x + 4 * dist_y
+        if dist_x > dist_y:
+            return 1000 * dist_x + 414 * dist_y
 
-        # return 10 * dist_y + 4 * dist_x
-        return sqrt(dist_x * dist_x + dist_y * dist_y)
+        return 1000 * dist_y + 414 * dist_x
+        # return sqrt(dist_x * dist_x + dist_y * dist_y)
 
     def retrace_path(self, start, end):
         ''' 
@@ -44,7 +45,9 @@ class Pathfinder:
 
         path.append(start)
 
-        [block.set_path() for block in path]
+        path[-1].set_start()
+        [block.set_path() for block in path[1:-1]]
+        path[0].set_end()
 
     def a_star_search(self, draw, start_block, end_block):
         ''' 
@@ -68,8 +71,12 @@ class Pathfinder:
         # Loop until open list is empty
         while len(open_list) > 0:
             # Extract the block with lowest f cost from
-            # open list then add it to the closed list
+            # open list
             current_block = heappop(open_list)
+
+            # If the current block is already in closed list, ignore it
+            if current_block.position in closed_list:
+                continue
 
             closed_list.add(current_block.position)
             current_block.set_closed()
@@ -78,33 +85,38 @@ class Pathfinder:
             # If the block is destination block then retrace path from source to destination
             if current_block.position == end_block.position:
                 self.retrace_path(start_block, end_block)
-                return
+                return True
 
             # Get all successor (neighbor) of the current block
-            for neighbour in self.grid_object.get_neighbours(current_block):
+            for neighbor in self.grid_object.get_neighbors(current_block):
                 # If the successor is bloked or is already in the closed list, then ignore it
-                if neighbour.type == BlockType.WALL:
+                if neighbor.type == BlockType.WALL:
                     continue
-                if neighbour.position in closed_list:
+                if neighbor.position in closed_list:
                     continue
 
                 # Calculate g cost for the successor
-                new_cost_to_neighbour = current_block.gCost + self.get_distance(current_block, neighbour)
+                new_cost_to_neighbor = current_block.gCost + self.get_distance(current_block, neighbor)
 
                 # If the successor is already in the open list and has a lower g cost
                 # then update g cost for it. Notice that the h distance from a block
                 # to the destination will never change, we don't have to update h cost
-                if new_cost_to_neighbour < neighbour.gCost:
-                    neighbour.gCost = new_cost_to_neighbour
-                    neighbour.fCost = neighbour.gCost + neighbour.hCost
-                    neighbour.parent = current_block
+                if new_cost_to_neighbor < neighbor.gCost:
+                    neighbor.gCost = new_cost_to_neighbor
+                    neighbor.fCost = neighbor.gCost + neighbor.hCost
+                    neighbor.parent = current_block
+                    heappush(open_list, neighbor)
 
                 # Else add the successor to the open list if it isn't in the open list
-                elif neighbour.gCost == 0:
-                    neighbour.gCost = new_cost_to_neighbour
-                    neighbour.hCost = self.get_distance(neighbour, end_block)
-                    neighbour.fCost = neighbour.gCost + neighbour.hCost
-                    neighbour.parent = current_block
-                    heappush(open_list, neighbour)
-                    neighbour.set_open()
-                    draw(neighbour)
+                elif neighbor.gCost == 0:
+                    neighbor.gCost = new_cost_to_neighbor
+                    neighbor.hCost = self.get_distance(neighbor, end_block)
+                    neighbor.fCost = neighbor.gCost + neighbor.hCost
+                    neighbor.parent = current_block
+                    heappush(open_list, neighbor)
+                    neighbor.set_open()
+                    draw(neighbor)
+
+            # time.sleep(0.5)
+
+        return False

@@ -19,7 +19,7 @@ type_color = {
     BlockType.END: [255, 165, 0],
     BlockType.OPEN: [0, 255, 0],
     BlockType.CLOSED: [255, 0, 0],
-    BlockType.PATH: [255, 0, 255],
+    BlockType.PATH: [0, 0, 255],
 }
 
 
@@ -78,4 +78,9 @@ class Block:
         pygame.draw.rect(screen, type_color[self.type], self.rect)
 
     def __lt__(self, other):
-        return self.fCost < other.fCost
+        if self.fCost < other.fCost:
+            return True
+        elif self.fCost == other.fCost:
+            return self.hCost < other.hCost
+        else:
+            return False

@@ -5,6 +5,7 @@ from pathfinder import Pathfinder
 from tkinter import *
 from tkinter import messagebox
 import time
+from threading import Thread
 
 # SIZE VARIABLES
 WINDOW_WIDTH = 1440
@@ -25,6 +26,7 @@ class Game():
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.pencil = BlockType.WALL
         self.grid = g.Grid(WINDOW_WIDTH, WINDOW_HEIGHT - 120, BLOCK_SIZE)
+        self.finder = Pathfinder(self.grid)
 
     def new_game(self):
         self.started = False
@@ -109,12 +111,15 @@ class Game():
                             if found_start and found_end:
                                 # a = time.time()
                                 self.started = True
-                                finder = Pathfinder(self.grid)
-                                finder.a_star_search(lambda block: self.grid.redraw(block, screen), start_block, end_block)
-                                self.grid.draw_path(screen)
-                                # c = time.time()
-                                # Tk().wm_withdraw()  # to hide the main window
-                                # messagebox.showinfo('PERFORMANCE', c-a)
+
+                                args = [lambda block: self.grid.redraw(block, screen), start_block, end_block]
+                                success = self.finder.a_star_search(*args)
+
+                                if success:
+                                    self.grid.draw_path(screen)
+                                else:
+                                    Tk().wm_withdraw()  # to hide the main window
+                                    messagebox.showinfo('ERROR', 'No solution!!!')
                             else:
                                 Tk().wm_withdraw()  # to hide the main window
                                 messagebox.showinfo('ERROR', 'Please select a start and end point')
