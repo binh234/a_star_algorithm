@@ -1,11 +1,10 @@
 from block import BlockType
 from heapq import *
 from math import sqrt
-import time
 
 class Pathfinder:
-    def __init__(self, grid):
-        self.grid_object = grid
+    def __init__(self, board):
+        self.board_object = board
 
     @staticmethod
     def get_distance(block_a, block_b):
@@ -88,7 +87,7 @@ class Pathfinder:
                 return True
 
             # Get all successor (neighbor) of the current block
-            for neighbor in self.grid_object.get_neighbors(current_block):
+            for neighbor in self.board_object.get_neighbors(current_block):
                 # If the successor is bloked or is already in the closed list, then ignore it
                 if neighbor.type == BlockType.WALL:
                     continue
@@ -99,7 +98,7 @@ class Pathfinder:
                 new_cost_to_neighbor = current_block.gCost + self.get_distance(current_block, neighbor)
 
                 # If the successor is already in the open list and has a lower g cost
-                # then update g cost for it. Notice that the h distance from a block
+                # then update g cost for it. Note that the h distance from a block
                 # to the destination will never change, we don't have to update h cost
                 if new_cost_to_neighbor < neighbor.gCost:
                     neighbor.gCost = new_cost_to_neighbor
@@ -116,7 +115,5 @@ class Pathfinder:
                     heappush(open_list, neighbor)
                     neighbor.set_open()
                     draw(neighbor)
-
-            # time.sleep(0.5)
 
         return False

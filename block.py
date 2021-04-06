@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 
-
+# Define all block types
 class BlockType(Enum):
     DEFAULT = 1
     WALL = 2
@@ -12,6 +12,7 @@ class BlockType(Enum):
     PATH = 7
 
 
+# Match each block type to the associate color
 type_color = {
     BlockType.DEFAULT: [128, 128, 128],
     BlockType.WALL: [0, 0, 0],
@@ -44,6 +45,7 @@ class Block:
         return self.rect
 
     def reset(self):
+        """ Reset block """
         self.gCost = 0
         self.hCost = 0
         self.fCost = 0
@@ -51,30 +53,39 @@ class Block:
         self.type = BlockType.DEFAULT
 
     def set_default(self):
+        """ Set block type to DEFAULT """
         self.type = BlockType.DEFAULT
 
     def set_wall(self):
+        """ Set block type to WALL"""
         self.type = BlockType.WALL
 
     def set_start(self):
+        """ Set block type to START """
         self.type = BlockType.START
 
     def set_end(self):
+        """ Set block type to END """
         self.type = BlockType.END
 
     def set_closed(self):
+        """ Set block type to CLOSED """
         self.type = BlockType.CLOSED
 
     def set_open(self):
+        """ Set block type to OPEN """
         self.type = BlockType.OPEN
 
     def set_path(self):
+        """ Set block type to PATH """
         self.type = BlockType.PATH
     
     def collidepoint(self, x, y):
+        """ Check if the block contains point (x, y)"""
         return self.rect.collidepoint(x, y)
 
     def draw(self, screen):
+        """ Draw block to the screen """
         pygame.draw.rect(screen, type_color[self.type], self.rect)
 
     def __lt__(self, other):
